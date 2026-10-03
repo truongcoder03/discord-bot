@@ -4,16 +4,36 @@ import random
 import sqlite3
 import time
 from datetime import datetime, timedelta
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
 
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 # =========================================================
+# WEB SERVER GIẢ LẬP CHO RENDER (CHỐNG LỖI TIMEOUT)
+# =========================================================
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot Casino is alive and running!")
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), SimpleHandler)
+    server.serve_forever()
+
+# Chạy Web Server ở một luồng riêng biệt (background thread)
+web_thread = threading.Thread(target=run_web_server, daemon=True)
+web_thread.start()
+
+# =========================================================
 # CONFIG & TOKEN & ADMIN
 # =========================================================
 
-TOKEN = "MTU1NDkxMTkyMjQ4NTIwNzA5MA.GvrweG.GctYRpcebOhS0aWIkeC_7WKQz_RBJ7vo5e7JEI"
+TOKEN = os.environ.get("DISCORD_TOKEN", "MTU1NDkxMTkyMjQ4NTIwNzA5MA.GvrweG.GctYRpcebOhS0aWIkeC_7WKQz_RBJ7vo5e7JEI")
 
 ADMIN_IDS = [
     1551927144534380676,
@@ -70,13 +90,11 @@ def get_random_show_item():
 
 def check_real_item_claim(bet_amount: int):
     if bet_amount >= MIN_BET_FOR_ITEM:
-        # Tỉ lệ 2% (random từ 1 đến 100 <= 2)
         if random.uniform(1, 100) <= ITEM_REAL_DROP_RATE:
             return True
     return False
 
 def check_jackpot_claim():
-    # Tỉ lệ 0.99% (random từ 0 đến 100 < 0.99)
     return random.uniform(0, 100) < 0.99
 
 # Database SQLite
@@ -354,7 +372,7 @@ async def setmoney_cmd(interaction: discord.Interaction, target: discord.User, a
 
     await set_points(target.id, amount)
     embed = discord.Embed(
-        title="⚙️ ĐẶT LẠI SỐ DƯ TÀI KHOẢN",
+        title="⚙️️ ĐẶT LẠI SỐ DƯ TÀI KHOẢN",
         description=f"👤 **Tài khoản:** <@{target.id}>\n"
                     f"💵 **Số dư mới:**\n### 🟢 {amount:,} VNĐ",
         color=discord.Color.blue()
@@ -568,8 +586,6 @@ async def baccarat_cmd(interaction: discord.Interaction):
 
     results_summary = []
     jp_pool = await get_jackpot()
-    
-    # Kiểm tra nổ hũ với tỉ lệ mới 0.99%
     hit_jackpot = check_jackpot_claim()
 
     for b in lobby["bets"]:
@@ -791,8 +807,6 @@ async def xocdia_cmd(interaction: discord.Interaction):
 
     results_summary = []
     jp_pool_current = await get_jackpot()
-    
-    # Kiểm tra nổ hũ với tỉ lệ mới 0.99%
     hit_jackpot = check_jackpot_claim()
 
     for b in lobby["bets"]:
