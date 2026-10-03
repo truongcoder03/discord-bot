@@ -33,7 +33,7 @@ web_thread.start()
 # CONFIG & TOKEN & ADMIN
 # =========================================================
 
-TOKEN = os.environ.get("DISCORD_TOKEN", "MTU1NDkxMTkyMjQ4NTIwNzA5MA.GvrweG.GctYRpcebOhS0aWIkeC_7WKQz_RBJ7vo5e7JEI")
+TOKEN = os.environ.get("DISCORD_TOKEN", "MTU1NDkxMTkyMjQ4NTIwNzA5MA.GFbBNE.1pCxV3HVEOhcHv9yn4e-UN_iKFB_A_n2qK3_9g")
 
 ADMIN_IDS = [
     1551927144534380676,
