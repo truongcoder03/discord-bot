@@ -13,7 +13,7 @@ from discord.ext import commands
 # CONFIG & TOKEN & ADMIN
 # =========================================================
 
-TOKEN = "MTU1NDkxMTkyMjQ4NTIwNzA5MA.Gh6rU3.zvo6VEXcePKbMYwmLqwcgM2IWKiatXxCF2cU8w"
+TOKEN = "MTU1NDkxMTkyMjQ4NTIwNzA5MA.GIYELp.cHQqgQpQzjZzzUGFVw9e8IRYdc-BdLJOAZis98"
 
 ADMIN_IDS = [
     1551927144534380676,
